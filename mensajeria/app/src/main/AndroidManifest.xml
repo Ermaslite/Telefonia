@@ -2,11 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permiso para leer el estado del teléfono (detectar llamadas entrantes) -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+
+    <!-- Permiso para enviar SMS (respuesta automática) -->
     <uses-permission android:name="android.permission.SEND_SMS" />
 
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <!-- Permiso para leer el registro de llamadas (obtener el número entrante en Android 9+) -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
     <application
         android:allowBackup="true"
@@ -16,24 +19,34 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Mensajeria">
+        android:theme="@style/Theme.MyApplication">
+
+        <!-- Activity principal -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Mensajeria">
+            android:theme="@style/Theme.MyApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <receiver android:name=".receiver.ReceptorLlamadas" android:exported="true">
+        <!--
+            BroadcastReceiver registrado a nivel de manifiesto (contexto de aplicación).
+            Escucha el cambio de estado telefónico para detectar llamadas entrantes.
+            Referencia: https://developer.android.com/reference/android/telephony/TelephonyManager#ACTION_PHONE_STATE_CHANGED
+        -->
+        <receiver
+            android:name=".IncomingCallReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
